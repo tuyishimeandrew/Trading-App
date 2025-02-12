@@ -64,6 +64,7 @@ def get_currencies(pair):
 
 NEWSAPI_API_KEY = "eb91a6486d80448688dcf703a949d4a6"  # Replace with your actual key
 
+
 def fetch_news(query):
     """Fetch recent news articles using NewsAPI."""
     try:
