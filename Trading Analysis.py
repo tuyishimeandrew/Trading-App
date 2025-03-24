@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 def main():
-    st.title("Buyer Performance by CP with Rankings")
+    st.title("Buyer Performance by CP with Rankings (with Conditions)")
 
     uploaded_file = st.file_uploader("Upload your Excel", type=["xlsx"])
     if uploaded_file is not None:
@@ -66,10 +66,13 @@ def main():
         merged_df = pd.merge(df, global_stats_df, on="Buyer", how="left")
 
         # Create formatted strings for display.
+        # For Global_Yield, display two decimals and a "%" sign.
         merged_df["Global_Yield_Display"] = merged_df["Global_Yield"].apply(
             lambda x: f"{x:.2f}%" if pd.notnull(x) else ""
         )
-        merged_df["Global_Juice_Loss_Display"] = merged_df["Global_Juice_Loss"]
+        # For Global_Juice_Loss, keep the original value and only add a "%" sign.
+        merged_df["Global_Juice_Loss_Display"] = merged_df["Global_Juice_Loss"].apply(
+            lambda x: f"{x}%" if pd.notnull(x) else ""
         )
 
         # Create a CP-Buyer table with unique rows.
@@ -79,24 +82,32 @@ def main():
         ]].drop_duplicates()
 
         # -------------------------------------------
-        # 3. Compute the ranking per CP (best, second, third)
-        #    - Rank based on Global_Yield (descending) and then Global_Juice_Loss (ascending)
+        # 3. Compute the ranking per CP (best, second, third) applying conditions:
+        #    - Buyer must have Global_Yield >= 36%
+        #    - Buyer must have Global_Juice_Loss <= 18%
         # -------------------------------------------
         ranking_rows = []
         for cp, sub_df in cp_buyer_df.groupby("Collection_Point"):
             sub_df = sub_df.copy()
-            # For ranking, fill missing yields with 0 and missing juice loss with a high number.
-            sub_df["Yield_Rank"] = sub_df["Global_Yield"].fillna(0)
-            sub_df["Juice_Rank"] = sub_df["Global_Juice_Loss"].fillna(9999)
+            # Apply conditions
+            valid = sub_df[(sub_df["Global_Yield"] >= 36) & (sub_df["Global_Juice_Loss"] <= 18)]
             
-            sub_df.sort_values(
-                by=["Yield_Rank", "Juice_Rank"],
-                ascending=[False, True],
-                inplace=True
-            )
-            best = sub_df.iloc[0]["Buyer"] if len(sub_df) > 0 else ""
-            second = sub_df.iloc[1]["Buyer"] if len(sub_df) > 1 else ""
-            third = sub_df.iloc[2]["Buyer"] if len(sub_df) > 2 else ""
+            # If no buyer meets conditions, leave ranking blank for this CP.
+            if valid.empty:
+                best = second = third = ""
+            else:
+                # For ranking, fill missing yields with 0 and missing juice loss with a high number.
+                valid["Yield_Rank"] = valid["Global_Yield"].fillna(0)
+                valid["Juice_Rank"] = valid["Global_Juice_Loss"].fillna(9999)
+                
+                valid.sort_values(
+                    by=["Yield_Rank", "Juice_Rank"],
+                    ascending=[False, True],
+                    inplace=True
+                )
+                best = valid.iloc[0]["Buyer"] if len(valid) > 0 else ""
+                second = valid.iloc[1]["Buyer"] if len(valid) > 1 else ""
+                third = valid.iloc[2]["Buyer"] if len(valid) > 2 else ""
             
             ranking_rows.append({
                 "Collection_Point": cp,
@@ -116,10 +127,10 @@ def main():
         final_df["Best Buyer for CP"] = final_df.apply(
             lambda row: row["Buyer"] if row["Buyer"] == row["Best_Buyer"] else "", axis=1
         )
-        final_df["Second best Buyer for CP"] = final_df.apply(
+        final_df["Second Best Buyer for CP"] = final_df.apply(
             lambda row: row["Buyer"] if row["Buyer"] == row["Second_Buyer"] else "", axis=1
         )
-        final_df["Third best Buyer for CP"] = final_df.apply(
+        final_df["Third Best Buyer for CP"] = final_df.apply(
             lambda row: row["Buyer"] if row["Buyer"] == row["Third_Buyer"] else "", axis=1
         )
 
@@ -140,7 +151,7 @@ def main():
             "Best Buyer for CP", "SECOND BEST BUYER FOR CP", "THIRD BEST BUYER FOR CP"
         ]].sort_values(by="Collection_Point")
 
-        st.subheader("Buyer Performance by CP (with Rankings)")
+        st.subheader("Buyer Performance by CP (with Rankings & Conditions)")
         st.dataframe(final_display)
 
 if __name__ == "__main__":
