@@ -69,8 +69,7 @@ def main():
         merged_df["Global_Yield_Display"] = merged_df["Global_Yield"].apply(
             lambda x: f"{x:.2f}%" if pd.notnull(x) else ""
         )
-        merged_df["Global_Juice_Loss_Display"] = merged_df["Global_Juice_Loss"].apply(
-            lambda x: f"{x:.2f}%" if pd.notnull(x) else ""
+        merged_df["Global_Juice_Loss_Display"] = merged_df["Global_Juice_Loss"]
         )
 
         # Create a CP-Buyer table with unique rows.
@@ -117,10 +116,10 @@ def main():
         final_df["Best Buyer for CP"] = final_df.apply(
             lambda row: row["Buyer"] if row["Buyer"] == row["Best_Buyer"] else "", axis=1
         )
-        final_df["SECOND BEST BUYER FOR CP"] = final_df.apply(
+        final_df["Second best Buyer for CP"] = final_df.apply(
             lambda row: row["Buyer"] if row["Buyer"] == row["Second_Buyer"] else "", axis=1
         )
-        final_df["THIRD BEST BUYER FOR CP"] = final_df.apply(
+        final_df["Third best Buyer for CP"] = final_df.apply(
             lambda row: row["Buyer"] if row["Buyer"] == row["Third_Buyer"] else "", axis=1
         )
 
