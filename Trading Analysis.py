@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 def main():
-    st.title("Buyer Performance by CP with Rankings (with Conditions)")
+    st.title("LTC Buyer Performance")
 
     uploaded_file = st.file_uploader("Upload your Excel", type=["xlsx"])
     if uploaded_file is not None:
