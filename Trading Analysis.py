@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 def main():
-    st.title("LTC Buyer Performance ")
+    st.title("Buyer Performance by CP with Rankings (with Conditions)")
 
     uploaded_file = st.file_uploader("Upload your Excel", type=["xlsx"])
     if uploaded_file is not None:
@@ -48,6 +48,9 @@ def main():
             latest_juice_loss_row = buyer_df.dropna(subset=["Juice_Loss_Kasese"]).head(1)
             if not latest_juice_loss_row.empty:
                 juice_loss_val = latest_juice_loss_row["Juice_Loss_Kasese"].values[0]
+                # If numeric, round to 2 decimals
+                if pd.notnull(juice_loss_val) and isinstance(juice_loss_val, (int, float)):
+                    juice_loss_val = round(juice_loss_val, 2)
             else:
                 juice_loss_val = np.nan
 
@@ -69,9 +72,9 @@ def main():
         merged_df["Global_Yield_Display"] = merged_df["Global_Yield"].apply(
             lambda x: f"{x:.2f}%" if pd.notnull(x) else ""
         )
-        # For Global_Juice_Loss, display the value as imported from Excel.
-        merged_df["Global_Juice_Loss_Display"] = round(merged_df["Global_Juice_Loss"],2).apply(
-            lambda x: f"{x}" if pd.notnull(x) else ""
+        # For Global_Juice_Loss, display the rounded value as a percentage.
+        merged_df["Global_Juice_Loss_Display"] = merged_df["Global_Juice_Loss"].apply(
+            lambda x: f"{x:.2f}%" if pd.notnull(x) else ""
         )
 
         # Create a CP-Buyer table with unique rows.
@@ -138,10 +141,9 @@ def main():
         #    - Rename Global_Yield_Display to "Yield three prior harvest(%)"
         #    - Rename Global_Juice_Loss_Display to "Juice loss at Kasese(%)"
         # -------------------------------------------
-        final_df['Global_Juice_Loss_Display'] = final_df['Global_Juice_Loss_Display']
         final_df.rename(columns={
             "Global_Yield_Display": "Yield three prior harvest(%)",
-            "Global_Juice_Loss_Display": "Juice loss at Kasese"
+            "Global_Juice_Loss_Display": "Juice loss at Kasese(%)"
         }, inplace=True)
 
         # Select only the required columns and sort by Collection_Point.
