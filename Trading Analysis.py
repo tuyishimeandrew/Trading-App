@@ -48,9 +48,9 @@ def main():
             latest_juice_loss_row = buyer_df.dropna(subset=["Juice_Loss_Kasese"]).head(1)
             if not latest_juice_loss_row.empty:
                 juice_loss_val = latest_juice_loss_row["Juice_Loss_Kasese"].values[0]
-                # If numeric, round to 2 decimals
+                # If numeric, multiply by 100 and round to 2 decimals (to convert to percentage)
                 if pd.notnull(juice_loss_val) and isinstance(juice_loss_val, (int, float)):
-                    juice_loss_val = round(juice_loss_val, 2)
+                    juice_loss_val = round(juice_loss_val * 100, 2)
             else:
                 juice_loss_val = np.nan
 
@@ -72,7 +72,7 @@ def main():
         merged_df["Global_Yield_Display"] = merged_df["Global_Yield"].apply(
             lambda x: f"{x:.2f}%" if pd.notnull(x) else ""
         )
-        # For Global_Juice_Loss, display the rounded value as a percentage.
+        # For Global_Juice_Loss, display the rounded and multiplied value as a percentage.
         merged_df["Global_Juice_Loss_Display"] = merged_df["Global_Juice_Loss"].apply(
             lambda x: f"{x:.2f}%" if pd.notnull(x) else ""
         )
