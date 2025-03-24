@@ -138,6 +138,7 @@ def main():
         #    - Rename Global_Yield_Display to "Yield three prior harvest(%)"
         #    - Rename Global_Juice_Loss_Display to "Juice loss at Kasese(%)"
         # -------------------------------------------
+        final_df['Global_Juice_Loss_Display'] = final_df['Global_Juice_Loss_Display']*100
         final_df.rename(columns={
             "Global_Yield_Display": "Yield three prior harvest(%)",
             "Global_Juice_Loss_Display": "Juice loss at Kasese(%)"
