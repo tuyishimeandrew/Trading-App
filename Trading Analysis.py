@@ -153,7 +153,7 @@ def main():
             "Best Buyer for CP", "Second Best Buyer for CP", "Third Best Buyer for CP"
         ]].sort_values(by="Collection_Point")
 
-        st.subheader("Buyer Performance by CP (with Rankings & Conditions)")
+        st.subheader("Buyer Performance by CP")
         st.dataframe(final_display)
 
 if __name__ == "__main__":
