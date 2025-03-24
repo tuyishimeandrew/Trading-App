@@ -21,7 +21,6 @@ def main():
         }, inplace=True)
 
         # Sort descending so that head(3) gives us the most recent valid harvests.
-        # (If you have a date column, consider sorting by that instead)
         df.sort_index(ascending=False, inplace=True)
 
         # -------------------------------------------
@@ -148,7 +147,7 @@ def main():
         final_display = final_df[[
             "Collection_Point", "Buyer", 
             "Yield three prior harvest(%)", "Juice loss at Kasese(%)", 
-            "Best Buyer for CP", "SECOND BEST BUYER FOR CP", "THIRD BEST BUYER FOR CP"
+            "Best Buyer for CP", "Second Best Buyer for CP", "Third Best Buyer for CP"
         ]].sort_values(by="Collection_Point")
 
         st.subheader("Buyer Performance by CP (with Rankings & Conditions)")
