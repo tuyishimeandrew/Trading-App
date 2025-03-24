@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 def main():
-    st.title("Buyer Performance by CP with Rankings (with Conditions)")
+    st.title("LTC Buyer Performance ")
 
     uploaded_file = st.file_uploader("Upload your Excel", type=["xlsx"])
     if uploaded_file is not None:
@@ -69,9 +69,9 @@ def main():
         merged_df["Global_Yield_Display"] = merged_df["Global_Yield"].apply(
             lambda x: f"{x:.2f}%" if pd.notnull(x) else ""
         )
-        # For Global_Juice_Loss, keep the original value and only add a "%" sign.
+        # For Global_Juice_Loss, display the value as imported from Excel.
         merged_df["Global_Juice_Loss_Display"] = merged_df["Global_Juice_Loss"].apply(
-            lambda x: f"{x}%" if pd.notnull(x) else ""
+            lambda x: f"{x}" if pd.notnull(x) else ""
         )
 
         # Create a CP-Buyer table with unique rows.
