@@ -70,7 +70,7 @@ def main():
             lambda x: f"{x:.2f}%" if pd.notnull(x) else ""
         )
         # For Global_Juice_Loss, display the value as imported from Excel.
-        merged_df["Global_Juice_Loss_Display"] = merged_df["Global_Juice_Loss"].apply(
+        merged_df["Global_Juice_Loss_Display"] = round(merged_df["Global_Juice_Loss"],2).apply(
             lambda x: f"{x}" if pd.notnull(x) else ""
         )
 
@@ -138,10 +138,10 @@ def main():
         #    - Rename Global_Yield_Display to "Yield three prior harvest(%)"
         #    - Rename Global_Juice_Loss_Display to "Juice loss at Kasese(%)"
         # -------------------------------------------
-        final_df['Global_Juice_Loss_Display'] = final_df['Global_Juice_Loss_Display']*100
+        final_df['Global_Juice_Loss_Display'] = final_df['Global_Juice_Loss_Display']
         final_df.rename(columns={
             "Global_Yield_Display": "Yield three prior harvest(%)",
-            "Global_Juice_Loss_Display": "Juice loss at Kasese(%)"
+            "Global_Juice_Loss_Display": "Juice loss at Kasese"
         }, inplace=True)
 
         # Select only the required columns and sort by Collection_Point.
